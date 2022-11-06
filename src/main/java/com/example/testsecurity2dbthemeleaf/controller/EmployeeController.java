@@ -1,10 +1,8 @@
 package com.example.testsecurity2dbthemeleaf.controller;
 
-import com.example.testsecurity2dbthemeleaf.entity.Student;
-import com.example.testsecurity2dbthemeleaf.repository.StudentRepository;
-import com.example.testsecurity2dbthemeleaf.repository.RepositoryLogs;
+import com.example.testsecurity2dbthemeleaf.entity.Employee;
+import com.example.testsecurity2dbthemeleaf.repository.EmployeeRepository;
 import com.example.testsecurity2dbthemeleaf.service.LogsService;
-import com.example.testsecurity2dbthemeleaf.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,58 +18,58 @@ import java.util.Optional;
 
 @Slf4j
 @Controller
-public class StudentController {
+public class EmployeeController {
 
     @Autowired
-    private StudentRepository studentRepository;
+    private EmployeeRepository employeeRepository;
     private final LogsService logsService;
 
-    public  StudentController(LogsService logsService) {
+    public EmployeeController(LogsService logsService) {
         this.logsService=logsService;
         }
 
     @GetMapping("/list")
-    public ModelAndView getAllStudents() {
+    public ModelAndView getAllEmployee() {
         log.info("/list -> connection");
-        ModelAndView mav = new ModelAndView("list-students");
-        mav.addObject("students", studentRepository.findAll());
+        ModelAndView mav = new ModelAndView("list-employee");
+        mav.addObject("employee", employeeRepository.findAll());
         logsService.info(  getCurrentUserName()+ " " + "Пользователь зашел на страницу студентов");
         return mav;
     }
 
-    @GetMapping("/addStudentForm")
-    public ModelAndView addStudentForm(){
-        ModelAndView mav = new ModelAndView("add-student-form");
-        Student student = new Student();
-        mav.addObject("student", student);
+    @GetMapping("/addEmployeeForm")
+    public ModelAndView addEmployeeForm(){
+        ModelAndView mav = new ModelAndView("add-employee-form");
+        Employee employee = new Employee();
+        mav.addObject("employee", employee);
         logsService.info(  getCurrentUserName()+ " " + "Пользователь зашел в раздел добавления студентов");
         return mav;
     }
 
 
-    @PostMapping("/saveStudent")
-    public  String saveStudent(@ModelAttribute Student student){
+    @PostMapping("/saveEmployee")
+    public  String saveEmployee(@ModelAttribute Employee employee){
 
-        studentRepository.save(student);
+        employeeRepository.save(employee);
         logsService.info(  getCurrentUserName()+ " " + "Пользователь сохранил нового студнта");
         return "redirect:/list";
     }
 
     @GetMapping("/showUpdateForm")
-    public ModelAndView showUpdateForm(@RequestParam Long studentId){
-        ModelAndView mav = new ModelAndView("add-student-form");
-        Optional<Student> optionalStudent = studentRepository.findById(studentId);
-        Student student = new Student();
-        if (optionalStudent.isPresent()){
-            student = optionalStudent.get();
+    public ModelAndView showUpdateForm(@RequestParam Long employeeId){
+        ModelAndView mav = new ModelAndView("add-employee-form");
+        Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
+        Employee employee = new Employee();
+        if (optionalEmployee.isPresent()){
+            employee = optionalEmployee.get();
         }
-        mav.addObject("student", student);
+        mav.addObject("employee", employee);
         return mav;
     }
 
-    @GetMapping("/deleteStudent")
-    public String deleteStudent(@RequestParam Long studentId) {
-        studentRepository.deleteById(studentId);
+    @GetMapping("/deleteEmployee")
+    public String deleteEmployee(@RequestParam Long employeeId) {
+        employeeRepository.deleteById(employeeId);
         logsService.info(  getCurrentUserName()+ " " + "Пользователь удалил студнта");
         return "redirect:/list";
     }
